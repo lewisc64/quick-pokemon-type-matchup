@@ -99,7 +99,7 @@
 
   function TypeViewButton({type, clickCallback, selected}) {
     return (
-      <div className="type-view" style={{backgroundColor: type.color, filter: selected ? "saturate(100%)" : null}} onClick={() => { clickCallback(type) }}>
+      <div className="type-view" style={{backgroundColor: type.color, filter: selected ? "saturate(100%) brightness(100%)" : null}} onClick={() => { clickCallback(type) }}>
         {type.name}
       </div>
     );

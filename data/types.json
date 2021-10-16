@@ -1,126 +1,126 @@
 [
   {
     "name": "normal",
-    "color": "grey",
+    "color": "#A0A0A0",
     "superEffective": [],
     "notVeryEffective": ["rock", "steel"],
     "noEffect": ["ghost"]
   },
   {
     "name": "fire",
-    "color": "orange",
+    "color": "#FFAA66",
     "superEffective": ["grass", "ice", "bug", "steel"],
     "notVeryEffective": ["fire", "water", "rock", "dragon"],
     "noEffect": []
   },
   {
     "name": "water",
-    "color": "blue",
+    "color": "#66AAFF",
     "superEffective": ["fire", "ground", "rock"],
     "notVeryEffective": ["water", "grass", "dragon"],
     "noEffect": []
   },
   {
     "name": "electric",
-    "color": "gold",
+    "color": "#FFDC60",
     "superEffective": ["water", "flying"],
     "notVeryEffective": ["electric", "grass", "dragon"],
     "noEffect": ["ground"]
   },
   {
     "name": "grass",
-    "color": "green",
+    "color": "#6AD854",
     "superEffective": ["water", "ground", "rock"],
     "notVeryEffective": ["fire", "grass", "poison", "flying", "bug", "dragon", "steel"],
     "noEffect": []
   },
   {
     "name": "ice",
-    "color": "lightblue",
+    "color": "#B6EAE4",
     "superEffective": ["grass", "ground", "flying", "dragon"],
     "notVeryEffective": ["fire", "water", "ice", "steel"],
     "noEffect": []
   },
   {
     "name": "fighting",
-    "color": "red",
+    "color": "#E85564",
     "superEffective": ["normal", "ice", "rock", "dark", "steel"],
     "notVeryEffective": ["poison", "flying", "psychic", "bug", "fairy"],
     "noEffect": []
   },
   {
     "name": "poison",
-    "color": "purple",
+    "color": "#BC74B1",
     "superEffective": ["grass", "fairy"],
     "notVeryEffective": ["poison", "ground", "rock", "ghost"],
     "noEffect": ["steel"]
   },
   {
     "name": "ground",
-    "color": "goldenrod",
+    "color": "#BA7A5D",
     "superEffective": ["fire", "electric", "poison", "rock", "steel"],
     "notVeryEffective": ["grass", "bug"],
     "noEffect": ["flying"]
   },
   {
     "name": "flying",
-    "color": "cyan",
+    "color": "#AABFE2",
     "superEffective": ["grass", "fighting", "bug"],
     "notVeryEffective": ["electric", "rock", "steel"],
     "noEffect": []
   },
   {
     "name": "psychic",
-    "color": "magenta",
+    "color": "#E07277",
     "superEffective": ["fighting", "poison"],
     "notVeryEffective": ["psychic", "steel"],
     "noEffect": ["dark"]
   },
   {
     "name": "bug",
-    "color": "darkgreen",
+    "color": "#ADDD82",
     "superEffective": ["grass", "psychic", "dark"],
     "notVeryEffective": ["fire", "fighting", "poison", "flying", "ghost", "steel", "fairy"],
     "noEffect": []
   },
   {
     "name": "rock",
-    "color": "brown",
+    "color": "#DBD0B3",
     "superEffective": ["fire", "ice", "flying", "bug"],
     "notVeryEffective": ["fighting", "ground", "steel"],
     "noEffect": []
   },
   {
     "name": "ghost",
-    "color": "purple",
+    "color": "#7488BC",
     "superEffective": ["psychic", "ghost"],
     "notVeryEffective": ["dark"],
     "noEffect": ["normal"]
   },
   {
     "name": "dragon",
-    "color": "darkcyan",
+    "color": "#3276B5",
     "superEffective": ["dragon"],
     "notVeryEffective": ["steel"],
     "noEffect": ["fairy"]
   },
   {
     "name": "dark",
-    "color": "black",
+    "color": "#5C5460",
     "superEffective": ["psychic", "ghost"],
     "notVeryEffective": ["fighting", "dark", "fairy"],
     "noEffect": []
   },
   {
     "name": "steel",
-    "color": "lightgrey",
+    "color": "#8BABB7",
     "superEffective": ["ice", "rock", "fairy"],
     "notVeryEffective": ["fire", "water", "electric", "steel"],
     "noEffect": []
   },
   {
     "name": "fairy",
-    "color": "lightpink",
+    "color": "#FCBFFF",
     "superEffective": ["fighting", "dragon", "dark"],
     "notVeryEffective": ["fire", "poison", "steel"],
     "noEffect": []
