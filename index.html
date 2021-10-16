@@ -1,3 +1,7 @@
+<!doctype html>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
 <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
 <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
 <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
@@ -10,20 +14,35 @@
 
   #interface {
     display: flex;
-    margin: 2rem;
     grid-column-gap: 1rem;
   }
 
   #info {
     color: white;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
   }
 
   ul.types {
-    width: 16rem;
+    width: 14rem;
     display: flex;
     flex-wrap: wrap;
     align-content: flex-start;
+    padding: 0;
+  }
+
+  @media screen and (max-width: 1000px) {
+    ul.types {
+      width: 7rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start;
+      padding: 0;
+    }
+  }
+
+
+  ol {
+    padding: 0;
   }
 
   li {
@@ -175,7 +194,7 @@
           selectedTypeNames.length > 0 ?
             <section id="info">
               <p>You are a {selectedTypeNames.map(x => <TypeViewText type={getTypeByName(x)} />)} Pok&eacute;mon!</p>
-              <p>You should fear:</p>
+              <h1>You Should Fear:</h1>
               <RankingList
                 types={types}
                 selectedTypes={selectedTypeNames.map(x => getTypeByName(x))}
@@ -185,7 +204,7 @@
                     return theirDamage / yourDamage + theirDamage - 1;
                   }
                 } />
-              <p>You may enjoy:</p>
+              <h1>You May Enjoy:</h1>
               <RankingList
                 types={types}
                 selectedTypes={selectedTypeNames.map(x => getTypeByName(x))}
