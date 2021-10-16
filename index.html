@@ -1,0 +1,206 @@
+<script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+<style>
+  body {
+    font-family: sans-serif;
+    background-color: #111111;
+  }
+
+  #interface {
+    display: flex;
+    margin: 2rem;
+    grid-column-gap: 1rem;
+  }
+
+  #info {
+    color: white;
+    font-size: 1.5rem;
+  }
+
+  ul.types {
+    width: 16rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+  }
+
+  li {
+    list-style: none;
+  }
+
+  .type-view-text, .type-view {
+    display: inline-block;
+    color: white;
+    border: 3px solid white;
+    border-radius: 0.5rem;
+    line-height: 2.5rem;
+    font-size: 1.2rem;
+    text-align: center;
+  }
+
+  .type-view-text {
+    width: 4rem;
+    height: 2rem;
+    line-height: 2rem;
+    margin: 0.2rem;
+  }
+
+  .type-view {
+    width: 6rem;
+    height: 2.5rem;
+    line-height: 2.5rem;
+    user-select: none;
+    cursor: pointer;
+    margin: 0.2rem;
+    filter: saturate(30%) brightness(30%);
+    transition: 0.1s;
+  }
+</style>
+
+<main>
+</main>
+
+<script type="text/babel">
+
+  function calculateDamageMultiplier(moveType, targetTypes) {
+    let multiplier = 1;
+    for (const type of targetTypes) {
+      if (type.superEffective.includes(moveType.name)) {
+        multiplier *= 2;
+      } else if (type.notVeryEffective.includes(moveType.name)) {
+        multiplier /= 2;
+      } else if (type.noEffect.includes(moveType.name)) {
+        multiplier *= 0;
+      }
+    }
+    return multiplier;
+  }
+
+  function TypeViewButton({type, clickCallback, selected}) {
+    return (
+      <div className="type-view" style={{backgroundColor: type.color, filter: selected ? "saturate(100%)" : null}} onClick={() => { clickCallback(type) }}>
+        {type.name}
+      </div>
+    );
+  }
+
+  function TypeViewText({type}) {
+    return (
+      <span className="type-view-text" style={{backgroundColor: type.color}}>
+        {type.name}
+      </span>
+    );
+  }
+
+  function RankingList({types, selectedTypes, calculateScoreCallback}) {
+    let rankingResult = {};
+
+    for (const type of types) {
+      let yourDamage = 0;
+      let theirDamage = 1;
+
+      for (const otherType of selectedTypes) {
+        theirDamage *= calculateDamageMultiplier(otherType, [type]);
+        yourDamage = Math.max(yourDamage, calculateDamageMultiplier(type, [otherType]))
+      }
+
+      let key = `Deal ${yourDamage}x, receive ${theirDamage}x`;
+      if (rankingResult[key] === undefined) {
+        rankingResult[key] = { score: calculateScoreCallback(yourDamage, theirDamage), types:[] };
+      }
+
+      rankingResult[key].types.push(type);
+    }
+
+    const entries = Object.entries(rankingResult)
+      .sort((a, b) => a[1].score > b[1].score ? -1 : 1)
+      .filter(([key, value]) => { return value.score > 1 })
+
+    return (
+      entries.length > 0 ?
+        <ol>
+          {
+            entries.map(([key, value]) =>
+              <li key={key}>
+                {key}: {value.types.map(type => <TypeViewText type={type} />)}
+              </li>)
+          }
+        </ol>
+      : <p>Nothing.</p>
+    )
+  }
+
+  function Main() {
+    const [types, setTypes] = React.useState([]);
+    const [selectedTypeNames, setSelectedTypeNames] = React.useState([]);
+
+    React.useEffect(() => {
+      async function fetchData() {
+        const response = await fetch("data/types.json");
+        setTypes(await response.json());
+      }
+      fetchData();
+    }, []);
+
+    function getTypeByName(name) {
+      for (const type of types) {
+        if (type.name == name) {
+          return type;
+        }
+      }
+      return null;
+    }
+
+    function toggleSelected(type) {
+      if (selectedTypeNames.includes(type.name)) {
+        setSelectedTypeNames(selectedTypeNames.filter(x => x != type.name));
+      } else {
+        setSelectedTypeNames([...selectedTypeNames, type.name]);
+      }
+    }
+
+    return (
+      <div id="interface">
+        <ul className="types">
+        {
+          Object.values(types).map(x => 
+            <li key={x.name}>
+              <TypeViewButton type={x} selected={selectedTypeNames.includes(x.name)} clickCallback={x => { toggleSelected(x) }} />
+            </li>)
+        }
+        </ul>
+        {
+          selectedTypeNames.length > 0 ?
+            <section id="info">
+              <p>You are a {selectedTypeNames.map(x => <TypeViewText type={getTypeByName(x)} />)} Pok&eacute;mon!</p>
+              <p>You should fear:</p>
+              <RankingList
+                types={types}
+                selectedTypes={selectedTypeNames.map(x => getTypeByName(x))}
+                calculateScoreCallback={
+                  (yourDamage, theirDamage) =>
+                  {
+                    return theirDamage / yourDamage + theirDamage - 1;
+                  }
+                } />
+              <p>You may enjoy:</p>
+              <RankingList
+                types={types}
+                selectedTypes={selectedTypeNames.map(x => getTypeByName(x))}
+                calculateScoreCallback={
+                  (yourDamage, theirDamage) =>
+                  {
+                    return yourDamage / theirDamage;
+                  }
+                } />
+            </section>
+          : <section id="info"><p>Please select some types!</p></section>
+        }
+      </div>
+    )
+  }
+
+  ReactDOM.render(<Main />, document.querySelector("main"));
+</script>
