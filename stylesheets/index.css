@@ -24,13 +24,8 @@ ul.types {
 @media screen and (max-width: 1000px) {
   ul.types {
     width: 7rem;
-    display: flex;
-    flex-wrap: wrap;
-    align-content: flex-start;
-    padding: 0;
   }
 }
-
 
 ol {
   padding: 0;
