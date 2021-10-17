@@ -1,3 +1,5 @@
+const MAXIMUM_TYPES_SELECTED = 2;
+
 function calculateDamageMultiplier(moveType, targetTypes) {
   let multiplier = 1;
   for (const type of targetTypes) {
@@ -44,11 +46,17 @@ function TypeSelectList({ types, setSelected }) {
 
   function toggleSelected(type) {
     let newSelected = [];
+
     if (selected.includes(type)) {
       newSelected = selected.filter(x => x.name != type.name);
     } else {
       newSelected = [...selected, type];
     }
+
+    if (newSelected.length > MAXIMUM_TYPES_SELECTED) {
+      newSelected = newSelected.slice(1);
+    }
+
     setSelectedInternal(newSelected);
     setSelected(newSelected);
   }
@@ -118,14 +126,19 @@ function RankingList({ types, selectedTypes, calculateScoreCallback }) {
   );
 }
 
-function InformationReadout({ types, selectedTypes }) {
-  return selectedTypes.length > 0 ? (
-    <section id="info">
-      <p>
-        You are a{' '}
-        {selectedTypes.map(x => <TypeViewText key={x.name} type={x} />)}{' '}
-        Pok&eacute;mon!
-      </p>
+function YourTypeReadout({ selectedTypes }) {
+  return (
+    <p>
+      You are a{'aeiou'.includes(selectedTypes[0].name[0]) ? 'n' : ''}{' '}
+      {selectedTypes.map(x => <TypeViewText key={x.name} type={x} />)}{' '}
+      Pok&eacute;mon!
+    </p>
+  );
+}
+
+function ConcernsReadout({ types, selectedTypes }) {
+  return (
+    <div>
       <h1>You Should Fear:</h1>
       <RankingList
         types={types}
@@ -142,10 +155,21 @@ function InformationReadout({ types, selectedTypes }) {
           return yourDamage / theirDamage;
         }}
       />
-    </section>
-  ) : (
+    </div>
+  );
+}
+
+function Information({ types, selectedTypes }) {
+  return (
     <section id="info">
-      <p>Please select some types!</p>
+      {selectedTypes.length > 0 ? (
+        <div>
+          <YourTypeReadout selectedTypes={selectedTypes} />
+          <ConcernsReadout types={types} selectedTypes={selectedTypes} />
+        </div>
+      ) : (
+        <p>Please select some types!</p>
+      )}
     </section>
   );
 }
@@ -165,7 +189,7 @@ function Main() {
   return (
     <div id="interface">
       <TypeSelectList types={types} setSelected={setSelectedTypes} />
-      <InformationReadout types={types} selectedTypes={selectedTypes} />
+      <Information types={types} selectedTypes={selectedTypes} />
     </div>
   );
 }
