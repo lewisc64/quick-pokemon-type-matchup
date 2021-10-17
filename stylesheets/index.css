@@ -66,4 +66,5 @@ li {
   cursor: pointer;
   margin: 0.2rem;
   font-size: 1.2rem;
+  transition: filter 0.1s;
 }
