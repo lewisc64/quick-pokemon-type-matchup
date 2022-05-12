@@ -14,7 +14,7 @@ function calculateDamageMultiplier(moveType, targetTypes) {
   return multiplier;
 }
 
-function TypeViewButton({ type, clickCallback, selected }) {
+const TypeViewButton = ({ type, clickCallback, selected }) => {
   return (
     <div
       className="type-view"
@@ -31,17 +31,17 @@ function TypeViewButton({ type, clickCallback, selected }) {
       {type.name.toUpperCase()}
     </div>
   );
-}
+};
 
-function TypeViewText({ type }) {
+const TypeViewText = ({ type }) => {
   return (
     <span className="type-view-text" style={{ backgroundColor: type.color }}>
       {type.name.toUpperCase()}
     </span>
   );
-}
+};
 
-function TypeSelectList({ types, setSelected }) {
+const TypeSelectList = ({ types, setSelected }) => {
   const [selected, setSelectedInternal] = React.useState([]);
 
   function toggleSelected(type) {
@@ -76,39 +76,48 @@ function TypeSelectList({ types, setSelected }) {
       ))}
     </ul>
   );
-}
+};
 
-function RankingList({ types, selectedTypes, calculateScoreCallback }) {
-  let rankingResult = {};
+const RankingList = ({ types, selectedTypes, calculateScoreCallback }) => {
+  const [entries, setEntries] = React.useState([]);
 
-  for (const type of types) {
-    let yourDamage = 0;
-    let theirDamage = 1;
+  React.useEffect(
+    () => {
+      const rankingResult = {};
 
-    for (const otherType of selectedTypes) {
-      theirDamage *= calculateDamageMultiplier(otherType, [type]);
-      yourDamage = Math.max(
-        yourDamage,
-        calculateDamageMultiplier(type, [otherType])
+      for (const type of types) {
+        let yourDamage = 0;
+        let theirDamage = 1;
+
+        for (const otherType of selectedTypes) {
+          theirDamage *= calculateDamageMultiplier(otherType, [type]);
+          yourDamage = Math.max(
+            yourDamage,
+            calculateDamageMultiplier(type, [otherType])
+          );
+        }
+
+        let key = `Deal ${yourDamage}x, receive ${theirDamage}x`;
+        if (rankingResult[key] === undefined) {
+          rankingResult[key] = {
+            score: calculateScoreCallback(yourDamage, theirDamage),
+            types: [],
+          };
+        }
+
+        rankingResult[key].types.push(type);
+      }
+
+      setEntries(
+        Object.entries(rankingResult)
+          .sort((a, b) => (a[1].score > b[1].score ? -1 : 1))
+          .filter(([_, value]) => {
+            return value.score > 1;
+          })
       );
-    }
-
-    let key = `Deal ${yourDamage}x, receive ${theirDamage}x`;
-    if (rankingResult[key] === undefined) {
-      rankingResult[key] = {
-        score: calculateScoreCallback(yourDamage, theirDamage),
-        types: [],
-      };
-    }
-
-    rankingResult[key].types.push(type);
-  }
-
-  const entries = Object.entries(rankingResult)
-    .sort((a, b) => (a[1].score > b[1].score ? -1 : 1))
-    .filter(([_, value]) => {
-      return value.score > 1;
-    });
+    },
+    [types, selectedTypes, calculateScoreCallback]
+  );
 
   return entries.length > 0 ? (
     <ol>
@@ -124,9 +133,9 @@ function RankingList({ types, selectedTypes, calculateScoreCallback }) {
   ) : (
     <p>Nothing.</p>
   );
-}
+};
 
-function YourTypeReadout({ selectedTypes }) {
+const YourTypeReadout = ({ selectedTypes }) => {
   return (
     <p>
       You are a{'aeiou'.includes(selectedTypes[0].name[0]) ? 'n' : ''}{' '}
@@ -134,32 +143,36 @@ function YourTypeReadout({ selectedTypes }) {
       Pok&eacute;mon!
     </p>
   );
-}
+};
 
-function ConcernsReadout({ types, selectedTypes }) {
+const ConcernsReadout = ({ types, selectedTypes }) => {
+  const fearScoreCallback = React.useCallback((yourDamage, theirDamage) => {
+    return theirDamage / yourDamage + theirDamage - 1;
+  }, []);
+
+  const enjoyScoreCallback = React.useCallback((yourDamage, theirDamage) => {
+    return yourDamage / theirDamage;
+  }, []);
+
   return (
     <div>
       <h1>You Should Fear:</h1>
       <RankingList
         types={types}
         selectedTypes={selectedTypes}
-        calculateScoreCallback={(yourDamage, theirDamage) => {
-          return theirDamage / yourDamage + theirDamage - 1;
-        }}
+        calculateScoreCallback={fearScoreCallback}
       />
       <h1>You May Enjoy:</h1>
       <RankingList
         types={types}
         selectedTypes={selectedTypes}
-        calculateScoreCallback={(yourDamage, theirDamage) => {
-          return yourDamage / theirDamage;
-        }}
+        calculateScoreCallback={enjoyScoreCallback}
       />
     </div>
   );
-}
+};
 
-function Information({ types, selectedTypes }) {
+const Information = ({ types, selectedTypes }) => {
   return (
     <section id="info">
       {selectedTypes.length > 0 ? (
@@ -172,9 +185,9 @@ function Information({ types, selectedTypes }) {
       )}
     </section>
   );
-}
+};
 
-function Main() {
+const Main = () => {
   const [types, setTypes] = React.useState([]);
   const [selectedTypes, setSelectedTypes] = React.useState([]);
 
@@ -192,6 +205,6 @@ function Main() {
       <Information types={types} selectedTypes={selectedTypes} />
     </div>
   );
-}
+};
 
 ReactDOM.render(<Main />, document.querySelector('main'));
