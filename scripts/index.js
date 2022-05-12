@@ -41,25 +41,33 @@ const TypeViewText = ({ type }) => {
   );
 };
 
-const TypeSelectList = ({ types, setSelected }) => {
-  const [selected, setSelectedInternal] = React.useState([]);
+const TypeSelectList = ({ types, updateSelectedTypes }) => {
+  const [selected, setSelected] = React.useState([]);
 
-  function toggleSelected(type) {
-    let newSelected = [];
+  const toggleSelected = React.useCallback(type => {
+    setSelected(previous => {
+      let newSelected = [];
 
-    if (selected.includes(type)) {
-      newSelected = selected.filter(x => x.name != type.name);
-    } else {
-      newSelected = [...selected, type];
-    }
+      if (previous.includes(type)) {
+        newSelected = previous.filter(x => x.name != type.name);
+      } else {
+        newSelected = [...previous, type];
+      }
 
-    if (newSelected.length > MAXIMUM_TYPES_SELECTED) {
-      newSelected = newSelected.slice(1);
-    }
+      if (newSelected.length > MAXIMUM_TYPES_SELECTED) {
+        newSelected = newSelected.slice(1);
+      }
 
-    setSelectedInternal(newSelected);
-    setSelected(newSelected);
-  }
+      return newSelected;
+    });
+  }, []);
+
+  React.useEffect(
+    () => {
+      updateSelectedTypes(selected);
+    },
+    [selected]
+  );
 
   return (
     <ul className="types">
@@ -68,9 +76,7 @@ const TypeSelectList = ({ types, setSelected }) => {
           <TypeViewButton
             type={x}
             selected={selected.includes(x)}
-            clickCallback={x => {
-              toggleSelected(x);
-            }}
+            clickCallback={toggleSelected}
           />
         </li>
       ))}
@@ -201,7 +207,7 @@ const Main = () => {
 
   return (
     <div id="interface">
-      <TypeSelectList types={types} setSelected={setSelectedTypes} />
+      <TypeSelectList types={types} updateSelectedTypes={setSelectedTypes} />
       <Information types={types} selectedTypes={selectedTypes} />
     </div>
   );
