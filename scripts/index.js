@@ -43,18 +43,10 @@ const TypeViewText = ({ type }) => {
 
 const DamageNumber = ({ damage, types }) => {
   let style;
-  if (types.length == 0) {
-    style = {};
-  } else if (types.length == 1) {
+  if (types.length == 1) {
     style = { color: types[0].color };
   } else {
-    style = {
-      background: `linear-gradient(to right,${types
-        .map(x => x.color)
-        .join(',')})`,
-      backgroundClip: 'text',
-      color: 'transparent',
-    };
+    style = {};
   }
   style.filter = `brightness(${Math.min(
     100 - (100 - damage * 100) / 1.75,
@@ -76,7 +68,7 @@ const DamageDisplay = ({ yourTypes, yourDamages, theirTypes, theirDamage }) => {
           {' '}
           <DamageNumber damage={damage} types={[yourTypes[i]]} />
         </span>
-      ))}, receive <DamageNumber damage={theirDamage} types={theirTypes} />:{' '}
+      ))}, receive <DamageNumber damage={theirDamage} types={[]} />:{' '}
       {theirTypes.map((type, i) => <TypeViewText key={i} type={type} />)}
     </div>
   );
