@@ -62,14 +62,18 @@ const DamageNumber = ({ damage, types }) => {
 const DamageDisplay = ({ yourTypes, yourDamages, theirTypes, theirDamage }) => {
   return (
     <div className={'damage-display'}>
-      Deal
-      {yourDamages.map((damage, i) => (
-        <span key={i}>
-          {' '}
-          <DamageNumber damage={damage} types={[yourTypes[i]]} />
-        </span>
-      ))}, receive <DamageNumber damage={theirDamage} types={[]} />:{' '}
-      {theirTypes.map((type, i) => <TypeViewText key={i} type={type} />)}
+      <div className={'damage-display-damages'}>
+        Deal
+        {yourDamages.map((damage, i) => (
+          <span key={i}>
+            {' '}
+            <DamageNumber damage={damage} types={[yourTypes[i]]} />
+          </span>
+        ))}, receive <DamageNumber damage={theirDamage} types={[]} />:
+      </div>
+      <div className={'damage-display-types'}>
+        {theirTypes.map((type, i) => <TypeViewText key={i} type={type} />)}
+      </div>
     </div>
   );
 };

@@ -68,3 +68,12 @@ li {
   color: white;
   font-weight: bold;
 }
+
+.damage-display-damages {
+  display: inline-block;
+  margin-right: 0.2rem;
+}
+
+.damage-display-types {
+  display: inline-block;
+}
