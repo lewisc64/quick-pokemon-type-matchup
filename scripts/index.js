@@ -41,6 +41,47 @@ const TypeViewText = ({ type }) => {
   );
 };
 
+const DamageNumber = ({ damage, types }) => {
+  let style;
+  if (types.length == 0) {
+    style = {};
+  } else if (types.length == 1) {
+    style = { color: types[0].color };
+  } else {
+    style = {
+      background: `linear-gradient(to right,${types
+        .map(x => x.color)
+        .join(',')})`,
+      backgroundClip: 'text',
+      color: 'transparent',
+    };
+  }
+  style.filter = `brightness(${Math.min(
+    100 - (100 - damage * 100) / 1.75,
+    100
+  )}%)`;
+  return (
+    <span className={'damage-number'} style={style}>
+      {damage}x
+    </span>
+  );
+};
+
+const DamageDisplay = ({ yourTypes, yourDamages, theirTypes, theirDamage }) => {
+  return (
+    <div className={'damage-display'}>
+      Deal
+      {yourDamages.map((damage, i) => (
+        <span key={i}>
+          {' '}
+          <DamageNumber damage={damage} types={[yourTypes[i]]} />
+        </span>
+      ))}, receive <DamageNumber damage={theirDamage} types={theirTypes} />:{' '}
+      {theirTypes.map((type, i) => <TypeViewText key={i} type={type} />)}
+    </div>
+  );
+};
+
 const TypeSelectList = ({ types, updateSelectedTypes }) => {
   const [selected, setSelected] = React.useState([]);
 
@@ -92,22 +133,28 @@ const RankingList = ({ types, selectedTypes, calculateScoreCallback }) => {
       const rankingResult = {};
 
       for (const type of types) {
-        let yourDamage = 0;
+        let yourDamageTypes = [];
+        let yourDamages = [];
+        let yourMaximumDamage = 0;
         let theirDamage = 1;
 
         for (const otherType of selectedTypes) {
           theirDamage *= calculateDamageMultiplier(otherType, [type]);
-          yourDamage = Math.max(
-            yourDamage,
-            calculateDamageMultiplier(type, [otherType])
-          );
+
+          const damage = calculateDamageMultiplier(type, [otherType]);
+          yourDamages.push(damage);
+          yourDamageTypes.push(otherType);
+          yourMaximumDamage = Math.max(yourMaximumDamage, damage);
         }
 
-        let key = `Deal ${yourDamage}x, receive ${theirDamage}x`;
+        let key = `${yourDamages.map(x => x + 'x').join('')},${theirDamage}x`;
         if (rankingResult[key] === undefined) {
           rankingResult[key] = {
-            score: calculateScoreCallback(yourDamage, theirDamage),
+            score: calculateScoreCallback(yourMaximumDamage, theirDamage),
             types: [],
+            yourDamageTypes: yourDamageTypes,
+            yourDamages: yourDamages,
+            theirDamage: theirDamage,
           };
         }
 
@@ -129,10 +176,12 @@ const RankingList = ({ types, selectedTypes, calculateScoreCallback }) => {
     <ol>
       {entries.map(([key, value]) => (
         <li key={key}>
-          {key}:{' '}
-          {value.types.map(type => (
-            <TypeViewText key={type.name} type={type} />
-          ))}
+          <DamageDisplay
+            yourTypes={value.yourDamageTypes}
+            yourDamages={value.yourDamages}
+            theirTypes={value.types}
+            theirDamage={value.theirDamage}
+          />
         </li>
       ))}
     </ol>

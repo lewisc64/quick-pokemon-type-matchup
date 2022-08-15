@@ -63,3 +63,8 @@ li {
   font-size: 1.2rem;
   transition: filter 0.1s;
 }
+
+.damage-number {
+  color: white;
+  font-weight: bold;
+}
