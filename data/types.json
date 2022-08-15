@@ -46,7 +46,7 @@
     "color": "#E85564",
     "superEffective": ["normal", "ice", "rock", "dark", "steel"],
     "notVeryEffective": ["poison", "flying", "psychic", "bug", "fairy"],
-    "noEffect": []
+    "noEffect": ["ghost"]
   },
   {
     "name": "poison",
