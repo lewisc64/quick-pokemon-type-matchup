@@ -23,6 +23,10 @@ const DamageDisplay = ({ yourTypes, yourDamages, theirTypes, theirDamage }) => {
       <div
         css={css`
           display: inline-block;
+          margin-bottom: 0.5rem;
+          @media (max-width: 1000px) {
+            display: block;
+          }
         `}
       >
         {theirTypes.map((type, i) => (

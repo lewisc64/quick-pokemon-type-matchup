@@ -20,26 +20,31 @@ function App() {
   return (
     <div
       css={css`
-        display: flex;
+        display: grid;
         grid-column-gap: 1rem;
+        grid-template-columns: auto 1fr;
       `}
     >
       <div
         css={css`
-          position: sticky;
-          left: 0;
-          top: 0;
           width: 14rem;
-          height: 100vh;
+          height: 100dvh;
           overflow-y: scroll;
-          @media screen and (max-width: 1000px) {
+          @media (max-width: 1000px) {
             width: 7rem;
           }
         `}
       >
         <TypeSelectList types={types} updateSelectedTypes={setSelectedTypes} />
       </div>
-      <Information types={types} selectedTypes={selectedTypes} />
+      <div
+        css={css`
+          height: 100dvh;
+          overflow-y: scroll;
+        `}
+      >
+        <Information types={types} selectedTypes={selectedTypes} />
+      </div>
     </div>
   );
 }
