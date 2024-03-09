@@ -1,0 +1,5 @@
+export const MAXIMUM_TYPES_SELECTED = 2;
+
+export const SUPER_EFFECTIVE_MULTIPLIER = 2;
+export const NOT_VERY_EFFECTIVE_MULTIPLIER = 0.5;
+export const NO_EFFECT_MULTIPLIER = 0;
