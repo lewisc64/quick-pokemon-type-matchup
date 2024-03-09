@@ -11,7 +11,7 @@ function App() {
 
   useEffect(() => {
     async function fetchData() {
-      const response = await fetch('/types.json');
+      const response = await fetch('./types.json');
       setTypes(await response.json());
     }
     fetchData();
